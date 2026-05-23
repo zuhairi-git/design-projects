@@ -1,34 +1,30 @@
 <!DOCTYPE html>
-<html lang="fi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tulostettava Onnenpyörä - Suunnittelutyökalu</title>
-    <!-- Google Fonts -->
+    <title>Wheel Designer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="app-layout">
-        <!-- Left Panel: Sidebar Editor -->
         <aside class="sidebar-editor no-print">
             <header class="editor-header">
                 <div class="logo-area">
                     <div class="logo-accent"></div>
                     <h1>WHEEL <span class="highlight">DESIGNER</span></h1>
                 </div>
-                <p class="subtitle">Suunnittele ja tulosta pelilaudat</p>
+                <p class="subtitle" data-i18n="subtitle">Design and print game boards</p>
             </header>
 
-            <!-- Editor Controls Wrapper -->
             <div class="editor-controls">
                 <!-- Theme Presets -->
                 <section class="control-group">
-                    <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Väriteemat / Presets</h2>
+                    <h2><i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="section_presets">Color Themes</span></h2>
                     <div class="preset-buttons">
                         <button id="preset-metropolia" class="btn-preset active">
                             <span class="swatch metropolia"></span> Metropolia Classic
@@ -36,35 +32,32 @@
                         <button id="preset-neon" class="btn-preset">
                             <span class="swatch neon"></span> Cyber Neon
                         </button>
-                        <button id="preset-outline" class="btn-preset">
-                            <span class="swatch outline"></span> Mustavalko / Outline
-                        </button>
                     </div>
                 </section>
 
                 <!-- Center Card Configuration -->
                 <section class="control-group">
-                    <h2><i class="fa-solid fa-square"></i> Keskilaatikko (Aloituspiste)</h2>
+                    <h2><i class="fa-solid fa-square"></i> <span data-i18n="section_center">Center Box (Start Point)</span></h2>
                     <div class="form-row">
                         <div class="form-field">
-                            <label for="center-text-1">Rivi 1 / Line 1</label>
+                            <label for="center-text-1" data-i18n="center_line1">Line 1</label>
                             <input type="text" id="center-text-1" value="ALOITA">
                         </div>
                         <div class="form-field">
-                            <label for="center-text-2">Rivi 2 / Line 2</label>
+                            <label for="center-text-2" data-i18n="center_line2">Line 2</label>
                             <input type="text" id="center-text-2" value="TÄSTÄ">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-field">
-                            <label for="center-bg-color">Taustaväri / BG Color</label>
+                            <label for="center-bg-color" data-i18n="center_bg">Background Color</label>
                             <div class="color-picker-wrapper">
                                 <input type="color" id="center-bg-color" value="#2bc4c3">
                                 <span class="color-val">#2bc4c3</span>
                             </div>
                         </div>
                         <div class="form-field">
-                            <label for="center-text-color">Tekstin väri / Text Color</label>
+                            <label for="center-text-color" data-i18n="center_text_color">Text Color</label>
                             <div class="color-picker-wrapper">
                                 <input type="color" id="center-text-color" value="#000000">
                                 <span class="color-val">#000000</span>
@@ -75,64 +68,86 @@
 
                 <!-- Segment Editing Section -->
                 <section class="control-group">
-                    <h2><i class="fa-solid fa-chart-pie"></i> Lohkojen muokkaus</h2>
-                    <p class="section-hint">Muokkaa lohkojen nimiä ja värejä. Voit poistaa lohkoja ja lisätä uusia:</p>
-                    <div class="segments-list" id="segments-editor-container">
-                        <!-- Dynamic segment inputs will be rendered here by app.js -->
-                    </div>
+                    <h2><i class="fa-solid fa-chart-pie"></i> <span data-i18n="section_segments">Segment Editor</span></h2>
+                    <p class="section-hint" data-i18n="segments_hint">Edit segment names and colors. You can remove and add segments:</p>
+                    <div class="segments-list" id="segments-editor-container"></div>
                     <button id="btn-add-segment" class="btn btn-secondary btn-block" style="margin-top: 10px; font-size: 0.85rem; padding: 8px 12px;">
-                        <i class="fa-solid fa-plus"></i> Lisää lohko / Add Segment
+                        <i class="fa-solid fa-plus"></i> <span data-i18n="add_segment">Add Segment</span>
                     </button>
-                </section>
-
-
-                <!-- General Display Settings -->
-                <section class="control-group">
-                    <h2><i class="fa-solid fa-sliders"></i> Asetukset</h2>
-                    <div class="form-field checkbox-field">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="toggle-ink-saver">
-                            <span class="slider-toggle"></span>
-                        </label>
-                        <span class="checkbox-label">Valkoinen tausta (Säästä väriainetta) / Ink Saver</span>
-                    </div>
                 </section>
             </div>
 
-            <!-- Export Buttons Footer -->
+            <!-- Export / Settings Dropdown Footer -->
             <footer class="editor-footer">
-                <button id="btn-export-png" class="btn btn-primary btn-block">
-                    <i class="fa-solid fa-image"></i> Lataa PNG kuva
-                </button>
-                <button id="btn-print-pdf" class="btn btn-secondary btn-block">
-                    <i class="fa-solid fa-print"></i> Tulosta / Tallenna PDF
-                </button>
+                <div class="dropdown-wrapper" id="export-settings-wrapper">
+                    <button class="btn btn-primary btn-block dropdown-trigger" id="btn-settings-dropdown">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span data-i18n="menu_export_settings">Export & Settings</span>
+                        <i class="fa-solid fa-chevron-up chevron-icon" id="dropdown-chevron"></i>
+                    </button>
+                    <div class="dropdown-panel" id="settings-dropdown-panel">
+                        <!-- Export -->
+                        <div class="dropdown-section">
+                            <h3 class="dropdown-section-title">
+                                <i class="fa-solid fa-file-export"></i>
+                                <span data-i18n="export_title">Export</span>
+                            </h3>
+                            <button id="btn-export-png" class="btn btn-primary btn-block">
+                                <i class="fa-solid fa-image"></i>
+                                <span data-i18n="export_png">Download PNG</span>
+                            </button>
+                            <button id="btn-print-pdf" class="btn btn-secondary btn-block">
+                                <i class="fa-solid fa-print"></i>
+                                <span data-i18n="export_pdf">Print / Save PDF</span>
+                            </button>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <!-- Display -->
+                        <div class="dropdown-section">
+                            <h3 class="dropdown-section-title">
+                                <i class="fa-solid fa-display"></i>
+                                <span data-i18n="display_title">Display</span>
+                            </h3>
+                            <div class="form-field checkbox-field">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="toggle-ink-saver">
+                                    <span class="slider-toggle"></span>
+                                </label>
+                                <span class="checkbox-label" data-i18n="ink_saver">White background (Ink Saver)</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <!-- Language -->
+                        <div class="dropdown-section">
+                            <h3 class="dropdown-section-title">
+                                <i class="fa-solid fa-language"></i>
+                                <span data-i18n="language_title">Language</span>
+                            </h3>
+                            <div class="lang-buttons">
+                                <button class="btn-lang active" data-lang="en">EN — English</button>
+                                <button class="btn-lang" data-lang="fi">FI — Suomi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </footer>
         </aside>
 
-        <!-- Right Panel: Printable Design Canvas Sheet -->
         <main class="canvas-preview-container">
             <div class="preview-card-sheet" id="print-sheet-element">
-                <!-- Printable area header (visible in print if needed, hidden by default) -->
                 <div class="print-only-header">
                     <h2>Metropolia Fuksipyörä - Pelilauta</h2>
                 </div>
-
                 <div class="vector-wheel-wrapper">
-                    <!-- SVG Vector Game Wheel -->
-                    <svg id="canvas-wheel-svg" viewBox="0 0 600 600" width="100%" height="100%">
-                        <!-- Dynamically drawn SVG wheel slices go here -->
-                    </svg>
+                    <svg id="canvas-wheel-svg" viewBox="0 0 600 600" width="100%" height="100%"></svg>
                 </div>
-
                 <div class="print-only-footer">
-                    <p>Tulostettu Wheel Designer -työkalulla. Metropolia UAS.</p>
+                    <p>Printed with Wheel Designer. Metropolia UAS.</p>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- App Logic Script -->
     <script src="app.js"></script>
 </body>
 </html>

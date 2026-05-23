@@ -659,3 +659,108 @@ body {
         margin: 10mm;
     }
 }
+
+/* --- EXPORT & SETTINGS DROPDOWN --- */
+.dropdown-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-trigger {
+    justify-content: flex-start;
+}
+
+.chevron-icon {
+    margin-left: auto;
+    font-size: 0.75rem;
+    opacity: 0.7;
+    transition: transform var(--transition-fast);
+}
+
+.chevron-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.dropdown-panel {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--color-bg-editor-surface);
+    border: 1px solid var(--color-border-editor);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    transform-origin: bottom center;
+    transform: scaleY(0.9) translateY(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.4);
+    z-index: 50;
+}
+
+.dropdown-panel.open {
+    transform: scaleY(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.dropdown-section {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dropdown-section-title {
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-bottom: 2px;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--color-border-editor);
+}
+
+/* Language Switcher */
+.lang-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-lang {
+    flex: 1;
+    background: var(--color-bg-editor-input);
+    border: 1px solid var(--color-border-editor);
+    color: var(--color-text-secondary);
+    padding: 7px 10px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.82rem;
+    transition: var(--transition-fast);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.btn-lang:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--color-text-secondary);
+    color: var(--color-text-primary);
+}
+
+.btn-lang.active {
+    background: rgba(0, 240, 255, 0.08);
+    border-color: var(--color-accent-teal);
+    color: var(--color-accent-teal);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.12);
+}
