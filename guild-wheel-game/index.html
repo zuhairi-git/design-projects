@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tulostettava Onnenpyörä - Suunnittelutyökalu</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Left Panel: Sidebar Editor -->
+        <aside class="sidebar-editor no-print">
+            <header class="editor-header">
+                <div class="logo-area">
+                    <div class="logo-accent"></div>
+                    <h1>WHEEL <span class="highlight">DESIGNER</span></h1>
+                </div>
+                <p class="subtitle">Suunnittele ja tulosta pelilaudat</p>
+            </header>
+
+            <!-- Editor Controls Wrapper -->
+            <div class="editor-controls">
+                <!-- Theme Presets -->
+                <section class="control-group">
+                    <h2><i class="fa-solid fa-wand-magic-sparkles"></i> Väriteemat / Presets</h2>
+                    <div class="preset-buttons">
+                        <button id="preset-metropolia" class="btn-preset active">
+                            <span class="swatch metropolia"></span> Metropolia Classic
+                        </button>
+                        <button id="preset-neon" class="btn-preset">
+                            <span class="swatch neon"></span> Cyber Neon
+                        </button>
+                        <button id="preset-outline" class="btn-preset">
+                            <span class="swatch outline"></span> Mustavalko / Outline
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Center Card Configuration -->
+                <section class="control-group">
+                    <h2><i class="fa-solid fa-square"></i> Keskilaatikko (Aloituspiste)</h2>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="center-text-1">Rivi 1 / Line 1</label>
+                            <input type="text" id="center-text-1" value="ALOITA">
+                        </div>
+                        <div class="form-field">
+                            <label for="center-text-2">Rivi 2 / Line 2</label>
+                            <input type="text" id="center-text-2" value="TÄSTÄ">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="center-bg-color">Taustaväri / BG Color</label>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="center-bg-color" value="#2bc4c3">
+                                <span class="color-val">#2bc4c3</span>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label for="center-text-color">Tekstin väri / Text Color</label>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="center-text-color" value="#000000">
+                                <span class="color-val">#000000</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Segment Editing Section -->
+                <section class="control-group">
+                    <h2><i class="fa-solid fa-chart-pie"></i> Lohkojen muokkaus</h2>
+                    <p class="section-hint">Muokkaa lohkojen nimiä ja värejä. Voit poistaa lohkoja ja lisätä uusia:</p>
+                    <div class="segments-list" id="segments-editor-container">
+                        <!-- Dynamic segment inputs will be rendered here by app.js -->
+                    </div>
+                    <button id="btn-add-segment" class="btn btn-secondary btn-block" style="margin-top: 10px; font-size: 0.85rem; padding: 8px 12px;">
+                        <i class="fa-solid fa-plus"></i> Lisää lohko / Add Segment
+                    </button>
+                </section>
+
+
+                <!-- General Display Settings -->
+                <section class="control-group">
+                    <h2><i class="fa-solid fa-sliders"></i> Asetukset</h2>
+                    <div class="form-field checkbox-field">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-ink-saver">
+                            <span class="slider-toggle"></span>
+                        </label>
+                        <span class="checkbox-label">Valkoinen tausta (Säästä väriainetta) / Ink Saver</span>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Export Buttons Footer -->
+            <footer class="editor-footer">
+                <button id="btn-export-png" class="btn btn-primary btn-block">
+                    <i class="fa-solid fa-image"></i> Lataa PNG kuva
+                </button>
+                <button id="btn-print-pdf" class="btn btn-secondary btn-block">
+                    <i class="fa-solid fa-print"></i> Tulosta / Tallenna PDF
+                </button>
+            </footer>
+        </aside>
+
+        <!-- Right Panel: Printable Design Canvas Sheet -->
+        <main class="canvas-preview-container">
+            <div class="preview-card-sheet" id="print-sheet-element">
+                <!-- Printable area header (visible in print if needed, hidden by default) -->
+                <div class="print-only-header">
+                    <h2>Metropolia Fuksipyörä - Pelilauta</h2>
+                </div>
+
+                <div class="vector-wheel-wrapper">
+                    <!-- SVG Vector Game Wheel -->
+                    <svg id="canvas-wheel-svg" viewBox="0 0 600 600" width="100%" height="100%">
+                        <!-- Dynamically drawn SVG wheel slices go here -->
+                    </svg>
+                </div>
+
+                <div class="print-only-footer">
+                    <p>Tulostettu Wheel Designer -työkalulla. Metropolia UAS.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- App Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>
