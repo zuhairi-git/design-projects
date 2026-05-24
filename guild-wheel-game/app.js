@@ -15,14 +15,16 @@ const TRANSLATIONS = {
         section_segments: "Segment Editor",
         segments_hint: "Edit segment names and colors. You can remove and add segments:",
         add_segment: "Add Segment",
-        new_segment_label: "NEW SEGMENT",
+        new_segment_label: "",
         segment_placeholder: "Segment",
         delete_segment_title: "Delete segment",
         min_segments_alert: "The wheel must have at least 3 segments!",
         menu_export_settings: "Export & Settings",
         export_title: "Export",
         export_png: "Download PNG",
+        export_png_short: "PNG",
         export_pdf: "Print / Save PDF",
+        export_pdf_short: "Print",
         display_title: "Display",
         ink_saver: "White background (Ink Saver)",
         language_title: "Language",
@@ -38,14 +40,16 @@ const TRANSLATIONS = {
         section_segments: "Lohkojen muokkaus",
         segments_hint: "Muokkaa lohkojen nimiä ja värejä. Voit poistaa lohkoja ja lisätä uusia:",
         add_segment: "Lisää lohko",
-        new_segment_label: "UUSI LOHKO",
+        new_segment_label: "",
         segment_placeholder: "Lohko",
         delete_segment_title: "Poista lohko",
         min_segments_alert: "Pyörässä täytyy olla vähintään 3 lohkoa!",
         menu_export_settings: "Vienti & Asetukset",
         export_title: "Vienti",
         export_png: "Lataa PNG kuva",
+        export_png_short: "PNG",
         export_pdf: "Tulosta / Tallenna PDF",
+        export_pdf_short: "Tulosta",
         display_title: "Näyttö",
         ink_saver: "Valkoinen tausta (Säästä väriainetta)",
         language_title: "Kieli",
@@ -57,41 +61,45 @@ let currentLang = 'en';
 // ==========================================
 // 2. STATE MANAGEMENT
 // ==========================================
+
+// Segment layout matches the original Metropolia Fuksipyörä board:
+// 4 guild segments (teal) + 8 narrow spacers (dark blue) = 12 total
+// Spacers have empty labels so nothing is drawn on them.
 const DEFAULT_PRESETS = {
     metropolia: {
         inkSaver: false,
         center: { text1: "ALOITA", text2: "TÄSTÄ", bg: "#2bc4c3", text: "#000000" },
         segments: [
-            { label: "Spacer", bg: "#1d4ed8" },
-            { label: "MYRO RY", bg: "#2bc4c3" },
-            { label: "Spacer", bg: "#1d4ed8" },
-            { label: "TXO RY", bg: "#2bc4c3" },
-            { label: "Spacer", bg: "#1d4ed8" },
-            { label: "Spacer", bg: "#2bc4c3" },
-            { label: "Spacer", bg: "#1d4ed8" },
-            { label: "Spacer", bg: "#2bc4c3" },
-            { label: "Spacer", bg: "#1d4ed8" },
-            { label: "MysteRy", bg: "#2bc4c3" },
-            { label: "Spacer", bg: "#1d4ed8" },
-            { label: "TROMBI RY", bg: "#2bc4c3" }
+            { label: "",           bg: "#1d4ed8" }, //  1 spacer
+            { label: "MYRO RY",   bg: "#2bc4c3" }, //  2 guild
+            { label: "",           bg: "#1d4ed8" }, //  3 spacer
+            { label: "TXO RY",    bg: "#2bc4c3" }, //  4 guild
+            { label: "",           bg: "#1d4ed8" }, //  5 spacer
+            { label: "",           bg: "#1d4ed8" }, //  6 spacer
+            { label: "",           bg: "#1d4ed8" }, //  7 spacer
+            { label: "",           bg: "#1d4ed8" }, //  8 spacer
+            { label: "MysteRy",   bg: "#2bc4c3" }, //  9 guild
+            { label: "",           bg: "#1d4ed8" }, // 10 spacer
+            { label: "TROMBI RY", bg: "#2bc4c3" }, // 11 guild
+            { label: "",           bg: "#1d4ed8" }, // 12 spacer
         ]
     },
     neon: {
         inkSaver: false,
         center: { text1: "START", text2: "HERE", bg: "#f43f5e", text: "#ffffff" },
         segments: [
-            { label: "ZONE 1", bg: "#1e1b4b" },
-            { label: "CYBER RY", bg: "#a855f7" },
-            { label: "ZONE 2", bg: "#312e81" },
-            { label: "HACKER RY", bg: "#a855f7" },
-            { label: "ZONE 3", bg: "#1e1b4b" },
-            { label: "BONUS", bg: "#f43f5e" },
-            { label: "ZONE 4", bg: "#312e81" },
+            { label: "ZONE 1",     bg: "#1e1b4b" },
+            { label: "CYBER RY",   bg: "#a855f7" },
+            { label: "ZONE 2",     bg: "#312e81" },
+            { label: "HACKER RY",  bg: "#a855f7" },
+            { label: "ZONE 3",     bg: "#1e1b4b" },
+            { label: "BONUS",      bg: "#f43f5e" },
+            { label: "ZONE 4",     bg: "#312e81" },
             { label: "DECRYPT RY", bg: "#a855f7" },
-            { label: "ZONE 5", bg: "#1e1b4b" },
-            { label: "MATRIX RY", bg: "#a855f7" },
-            { label: "ZONE 6", bg: "#312e81" },
-            { label: "VOXEL RY", bg: "#a855f7" }
+            { label: "ZONE 5",     bg: "#1e1b4b" },
+            { label: "MATRIX RY",  bg: "#a855f7" },
+            { label: "ZONE 6",     bg: "#312e81" },
+            { label: "VOXEL RY",   bg: "#a855f7" }
         ]
     }
 };
@@ -124,11 +132,7 @@ function updateUIColors() {
     document.querySelector('label[for="center-text-color"] + .color-picker-wrapper .color-val').textContent = STATE.center.text;
 
     const previewSheet = document.getElementById('print-sheet-element');
-    if (STATE.inkSaver) {
-        previewSheet.classList.add('ink-saver');
-    } else {
-        previewSheet.classList.remove('ink-saver');
-    }
+    previewSheet.classList.toggle('ink-saver', STATE.inkSaver);
 }
 
 // ==========================================
@@ -245,7 +249,7 @@ function drawWheel() {
         svg.appendChild(path);
 
         const labelText = seg.label.trim();
-        if (labelText && !(STATE.inkSaver && labelText.toLowerCase() === 'spacer')) {
+        if (labelText) {
             const textAngle = startDeg + sectorAngle / 2;
             const textRad = (textAngle * Math.PI) / 180;
             const textR = (r + rInner) / 2;
@@ -390,24 +394,10 @@ function bindControls() {
     }
 
     // Center card inputs
-    document.getElementById('center-text-1').oninput = (e) => {
-        STATE.center.text1 = e.target.value;
-        drawWheel();
-    };
-    document.getElementById('center-text-2').oninput = (e) => {
-        STATE.center.text2 = e.target.value;
-        drawWheel();
-    };
-    document.getElementById('center-bg-color').oninput = (e) => {
-        STATE.center.bg = e.target.value;
-        updateUIColors();
-        drawWheel();
-    };
-    document.getElementById('center-text-color').oninput = (e) => {
-        STATE.center.text = e.target.value;
-        updateUIColors();
-        drawWheel();
-    };
+    document.getElementById('center-text-1').oninput = (e) => { STATE.center.text1 = e.target.value; drawWheel(); };
+    document.getElementById('center-text-2').oninput = (e) => { STATE.center.text2 = e.target.value; drawWheel(); };
+    document.getElementById('center-bg-color').oninput = (e) => { STATE.center.bg = e.target.value; updateUIColors(); drawWheel(); };
+    document.getElementById('center-text-color').oninput = (e) => { STATE.center.text = e.target.value; updateUIColors(); drawWheel(); };
 
     // Ink saver toggle
     document.getElementById('toggle-ink-saver').onchange = (e) => {
@@ -416,7 +406,7 @@ function bindControls() {
         drawWheel();
     };
 
-    // Add segment
+    // Add segment (empty label by default, alternating color)
     document.getElementById('btn-add-segment').onclick = () => {
         let newColor = "#1d4ed8";
         if (STATE.segments.length > 0) {
@@ -428,11 +418,15 @@ function bindControls() {
         drawWheel();
     };
 
-    // Export buttons
+    // Desktop export buttons (inside dropdown)
     document.getElementById('btn-export-png').onclick = () => exportToPNG();
     document.getElementById('btn-print-pdf').onclick = () => window.print();
 
-    // Dropdown toggle
+    // Mobile export buttons (bottom bar)
+    document.getElementById('btn-export-png-mobile').onclick = () => exportToPNG();
+    document.getElementById('btn-print-pdf-mobile').onclick = () => window.print();
+
+    // Export & Settings dropdown toggle
     const dropdownTrigger = document.getElementById('btn-settings-dropdown');
     const dropdownPanel = document.getElementById('settings-dropdown-panel');
     const dropdownChevron = document.getElementById('dropdown-chevron');
@@ -442,12 +436,10 @@ function bindControls() {
         dropdownChevron.classList.toggle('rotated', isOpen);
     };
 
-    // Prevent clicks inside the wrapper from closing the dropdown
     document.getElementById('export-settings-wrapper').addEventListener('click', (e) => {
         e.stopPropagation();
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', () => {
         dropdownPanel.classList.remove('open');
         dropdownChevron.classList.remove('rotated');
@@ -460,6 +452,34 @@ function bindControls() {
             applyTranslations();
         };
     });
+
+    // ---- Mobile menu ----
+    const sidebarEl = document.getElementById('sidebar-editor');
+    const backdropEl = document.getElementById('mobile-backdrop');
+    const mobileMenuBtn = document.getElementById('btn-mobile-menu');
+    const sidebarCloseBtn = document.getElementById('btn-sidebar-close');
+    const mobileChevron = document.getElementById('mobile-menu-chevron');
+
+    function openMobileMenu() {
+        sidebarEl.classList.add('mobile-open');
+        backdropEl.classList.add('visible');
+        mobileMenuBtn.classList.add('active');
+        mobileChevron.classList.add('rotated');
+    }
+
+    function closeMobileMenu() {
+        sidebarEl.classList.remove('mobile-open');
+        backdropEl.classList.remove('visible');
+        mobileMenuBtn.classList.remove('active');
+        mobileChevron.classList.remove('rotated');
+    }
+
+    mobileMenuBtn.onclick = () => {
+        sidebarEl.classList.contains('mobile-open') ? closeMobileMenu() : openMobileMenu();
+    };
+
+    sidebarCloseBtn.onclick = closeMobileMenu;
+    backdropEl.onclick = closeMobileMenu;
 }
 
 // ==========================================

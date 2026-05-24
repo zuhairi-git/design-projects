@@ -11,8 +11,29 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Mobile Top Bar (hidden on desktop) -->
+    <div class="mobile-topbar no-print" id="mobile-topbar">
+        <div class="logo-area">
+            <div class="logo-accent"></div>
+            <h1>WHEEL <span class="highlight">DESIGNER</span></h1>
+        </div>
+        <button class="btn-mobile-menu" id="btn-mobile-menu">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Edit</span>
+            <i class="fa-solid fa-chevron-down" id="mobile-menu-chevron"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Backdrop -->
+    <div class="mobile-backdrop" id="mobile-backdrop"></div>
+
     <div class="app-layout">
-        <aside class="sidebar-editor no-print">
+        <aside class="sidebar-editor no-print" id="sidebar-editor">
+            <!-- Close button visible only on mobile -->
+            <button class="sidebar-close-btn" id="btn-sidebar-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
             <header class="editor-header">
                 <div class="logo-area">
                     <div class="logo-accent"></div>
@@ -146,6 +167,18 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Mobile Bottom Action Bar (hidden on desktop) -->
+    <div class="mobile-bottom-bar no-print">
+        <button id="btn-export-png-mobile" class="btn btn-primary">
+            <i class="fa-solid fa-image"></i>
+            <span data-i18n="export_png_short">PNG</span>
+        </button>
+        <button id="btn-print-pdf-mobile" class="btn btn-secondary">
+            <i class="fa-solid fa-print"></i>
+            <span data-i18n="export_pdf_short">Print</span>
+        </button>
     </div>
 
     <script src="app.js"></script>
