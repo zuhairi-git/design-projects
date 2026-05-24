@@ -204,6 +204,35 @@ body {
     padding-bottom: 4px;
 }
 
+.btn-dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.08), rgba(0, 240, 255, 0.04));
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    color: var(--color-accent-teal);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.btn-dropdown-link:hover {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 240, 255, 0.1));
+    border-color: var(--color-accent-teal);
+    transform: translateX(4px);
+}
+
+.btn-dropdown-link i:last-child {
+    margin-left: auto;
+    font-size: 0.8rem;
+}
+
 /* Compact preset buttons for header */
 .preset-buttons-compact {
     display: flex;
