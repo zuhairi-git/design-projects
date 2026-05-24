@@ -373,41 +373,160 @@ function exportToPNG() {
 // 7. BIND UI INTERACTIONS
 // ==========================================
 function bindControls() {
-    // Preset buttons
-    document.getElementById('preset-metropolia').onclick = (e) => {
-        setActivePresetButton(e.currentTarget);
-        resetToPreset('metropolia');
-        renderSegmentEditor();
-        drawWheel();
-    };
+    // ---- Preset buttons (Desktop) ----
+    const presetMetropolia = document.getElementById('preset-metropolia');
+    const presetNeon = document.getElementById('preset-neon');
 
-    document.getElementById('preset-neon').onclick = (e) => {
-        setActivePresetButton(e.currentTarget);
-        resetToPreset('neon');
-        renderSegmentEditor();
-        drawWheel();
-    };
+    if (presetMetropolia) {
+        presetMetropolia.onclick = (e) => {
+            setActivePresetButton(e.currentTarget);
+            resetToPreset('metropolia');
+            syncMobileInputs();
+            renderSegmentEditor();
+            drawWheel();
+        };
+    }
+
+    if (presetNeon) {
+        presetNeon.onclick = (e) => {
+            setActivePresetButton(e.currentTarget);
+            resetToPreset('neon');
+            syncMobileInputs();
+            renderSegmentEditor();
+            drawWheel();
+        };
+    }
+
+    // ---- Preset buttons (Mobile) ----
+    const presetMetropoiaMobile = document.getElementById('preset-metropolia-mobile');
+    const presetNeonMobile = document.getElementById('preset-neon-mobile');
+
+    if (presetMetropoiaMobile) {
+        presetMetropoiaMobile.onclick = (e) => {
+            setActivePresetButtonMobile(e.currentTarget);
+            resetToPreset('metropolia');
+            syncMobileInputs();
+            renderSegmentEditor();
+            renderSegmentEditorMobile();
+            drawWheel();
+        };
+    }
+
+    if (presetNeonMobile) {
+        presetNeonMobile.onclick = (e) => {
+            setActivePresetButtonMobile(e.currentTarget);
+            resetToPreset('neon');
+            syncMobileInputs();
+            renderSegmentEditor();
+            renderSegmentEditorMobile();
+            drawWheel();
+        };
+    }
 
     function setActivePresetButton(btn) {
-        document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.btn-preset').forEach(b => {
+            if (b.id && (b.id.includes('desktop') || !b.id.includes('mobile'))) {
+                b.classList.remove('active');
+            }
+        });
         btn.classList.add('active');
     }
 
-    // Center card inputs
-    document.getElementById('center-text-1').oninput = (e) => { STATE.center.text1 = e.target.value; drawWheel(); };
-    document.getElementById('center-text-2').oninput = (e) => { STATE.center.text2 = e.target.value; drawWheel(); };
-    document.getElementById('center-bg-color').oninput = (e) => { STATE.center.bg = e.target.value; updateUIColors(); drawWheel(); };
-    document.getElementById('center-text-color').oninput = (e) => { STATE.center.text = e.target.value; updateUIColors(); drawWheel(); };
+    function setActivePresetButtonMobile(btn) {
+        const mobileButtons = document.querySelectorAll('#preset-metropolia-mobile, #preset-neon-mobile');
+        mobileButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // Also update desktop
+        if (btn.id === 'preset-metropolia-mobile') {
+            document.getElementById('preset-metropolia')?.classList.add('active');
+            document.getElementById('preset-neon')?.classList.remove('active');
+        } else {
+            document.getElementById('preset-neon')?.classList.add('active');
+            document.getElementById('preset-metropolia')?.classList.remove('active');
+        }
+    }
 
-    // Ink saver toggle
-    document.getElementById('toggle-ink-saver').onchange = (e) => {
-        STATE.inkSaver = e.target.checked;
+    // ---- Center card inputs (Desktop) ----
+    const centerText1 = document.getElementById('center-text-1');
+    const centerText2 = document.getElementById('center-text-2');
+    const centerBgColor = document.getElementById('center-bg-color');
+    const centerTextColor = document.getElementById('center-text-color');
+
+    if (centerText1) centerText1.oninput = (e) => {
+        STATE.center.text1 = e.target.value;
+        syncMobileInputs();
+        drawWheel();
+    };
+    if (centerText2) centerText2.oninput = (e) => {
+        STATE.center.text2 = e.target.value;
+        syncMobileInputs();
+        drawWheel();
+    };
+    if (centerBgColor) centerBgColor.oninput = (e) => {
+        STATE.center.bg = e.target.value;
+        syncMobileInputs();
+        updateUIColors();
+        drawWheel();
+    };
+    if (centerTextColor) centerTextColor.oninput = (e) => {
+        STATE.center.text = e.target.value;
+        syncMobileInputs();
         updateUIColors();
         drawWheel();
     };
 
-    // Add segment (empty label by default, alternating color)
-    document.getElementById('btn-add-segment').onclick = () => {
+    // ---- Center card inputs (Mobile) ----
+    const centerText1Mobile = document.getElementById('center-text-1-mobile');
+    const centerText2Mobile = document.getElementById('center-text-2-mobile');
+    const centerBgColorMobile = document.getElementById('center-bg-color-mobile');
+    const centerTextColorMobile = document.getElementById('center-text-color-mobile');
+
+    if (centerText1Mobile) centerText1Mobile.oninput = (e) => {
+        STATE.center.text1 = e.target.value;
+        syncDesktopInputs();
+        drawWheel();
+    };
+    if (centerText2Mobile) centerText2Mobile.oninput = (e) => {
+        STATE.center.text2 = e.target.value;
+        syncDesktopInputs();
+        drawWheel();
+    };
+    if (centerBgColorMobile) centerBgColorMobile.oninput = (e) => {
+        STATE.center.bg = e.target.value;
+        syncDesktopInputs();
+        updateUIColors();
+        drawWheel();
+    };
+    if (centerTextColorMobile) centerTextColorMobile.oninput = (e) => {
+        STATE.center.text = e.target.value;
+        syncDesktopInputs();
+        updateUIColors();
+        drawWheel();
+    };
+
+    // ---- Ink saver toggle ----
+    const toggleInkSaver = document.getElementById('toggle-ink-saver');
+    const toggleInkSaverMobile = document.getElementById('toggle-ink-saver-mobile');
+
+    if (toggleInkSaver) toggleInkSaver.onchange = (e) => {
+        STATE.inkSaver = e.target.checked;
+        if (toggleInkSaverMobile) toggleInkSaverMobile.checked = e.target.checked;
+        updateUIColors();
+        drawWheel();
+    };
+
+    if (toggleInkSaverMobile) toggleInkSaverMobile.onchange = (e) => {
+        STATE.inkSaver = e.target.checked;
+        if (toggleInkSaver) toggleInkSaver.checked = e.target.checked;
+        updateUIColors();
+        drawWheel();
+    };
+
+    // ---- Add segment ----
+    const btnAddSegment = document.getElementById('btn-add-segment');
+    const btnAddSegmentMobile = document.getElementById('btn-add-segment-mobile');
+
+    const addSegmentHandler = () => {
         let newColor = "#1d4ed8";
         if (STATE.segments.length > 0) {
             const lastColor = STATE.segments[STATE.segments.length - 1].bg;
@@ -415,37 +534,18 @@ function bindControls() {
         }
         STATE.segments.push({ label: TRANSLATIONS[currentLang].new_segment_label, bg: newColor });
         renderSegmentEditor();
+        renderSegmentEditorMobile();
         drawWheel();
     };
 
-    // Desktop export buttons (inside dropdown)
-    document.getElementById('btn-export-png').onclick = () => exportToPNG();
-    document.getElementById('btn-print-pdf').onclick = () => window.print();
+    if (btnAddSegment) btnAddSegment.onclick = addSegmentHandler;
+    if (btnAddSegmentMobile) btnAddSegmentMobile.onclick = addSegmentHandler;
 
-    // Mobile export buttons (bottom bar)
-    document.getElementById('btn-export-png-mobile').onclick = () => exportToPNG();
-    document.getElementById('btn-print-pdf-mobile').onclick = () => window.print();
+    // ---- Export buttons (Header) ----
+    document.getElementById('btn-export-png-header')?.addEventListener('click', () => exportToPNG());
+    document.getElementById('btn-print-pdf-header')?.addEventListener('click', () => window.print());
 
-    // Export & Settings dropdown toggle
-    const dropdownTrigger = document.getElementById('btn-settings-dropdown');
-    const dropdownPanel = document.getElementById('settings-dropdown-panel');
-    const dropdownChevron = document.getElementById('dropdown-chevron');
-
-    dropdownTrigger.onclick = () => {
-        const isOpen = dropdownPanel.classList.toggle('open');
-        dropdownChevron.classList.toggle('rotated', isOpen);
-    };
-
-    document.getElementById('export-settings-wrapper').addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-
-    document.addEventListener('click', () => {
-        dropdownPanel.classList.remove('open');
-        dropdownChevron.classList.remove('rotated');
-    });
-
-    // Language buttons
+    // ---- Language buttons ----
     document.querySelectorAll('.btn-lang').forEach(btn => {
         btn.onclick = () => {
             currentLang = btn.dataset.lang;
@@ -453,33 +553,126 @@ function bindControls() {
         };
     });
 
-    // ---- Mobile menu ----
-    const sidebarEl = document.getElementById('sidebar-editor');
-    const backdropEl = document.getElementById('mobile-backdrop');
-    const mobileMenuBtn = document.getElementById('btn-mobile-menu');
-    const sidebarCloseBtn = document.getElementById('btn-sidebar-close');
-    const mobileChevron = document.getElementById('mobile-menu-chevron');
+    // ---- Mobile Bottom Sheet ----
+    const bottomSheet = document.getElementById('mobile-bottom-sheet');
+    const backdrop = document.getElementById('mobile-backdrop');
+    const headerMenuBtn = document.getElementById('btn-header-menu');
+    const sheetCloseBtn = document.getElementById('btn-sheet-close');
 
-    function openMobileMenu() {
-        sidebarEl.classList.add('mobile-open');
-        backdropEl.classList.add('visible');
-        mobileMenuBtn.classList.add('active');
-        mobileChevron.classList.add('rotated');
+    function openBottomSheet() {
+        bottomSheet.classList.add('visible');
+        backdrop.classList.add('visible');
     }
 
-    function closeMobileMenu() {
-        sidebarEl.classList.remove('mobile-open');
-        backdropEl.classList.remove('visible');
-        mobileMenuBtn.classList.remove('active');
-        mobileChevron.classList.remove('rotated');
+    function closeBottomSheet() {
+        bottomSheet.classList.remove('visible');
+        backdrop.classList.remove('visible');
     }
 
-    mobileMenuBtn.onclick = () => {
-        sidebarEl.classList.contains('mobile-open') ? closeMobileMenu() : openMobileMenu();
-    };
+    if (headerMenuBtn) {
+        headerMenuBtn.onclick = openBottomSheet;
+    }
 
-    sidebarCloseBtn.onclick = closeMobileMenu;
-    backdropEl.onclick = closeMobileMenu;
+    if (sheetCloseBtn) {
+        sheetCloseBtn.onclick = closeBottomSheet;
+    }
+
+    if (backdrop) {
+        backdrop.onclick = closeBottomSheet;
+    }
+
+    // Close sheet when clicking outside
+    if (bottomSheet) {
+        document.addEventListener('click', (e) => {
+            if (!bottomSheet.contains(e.target) && !headerMenuBtn?.contains(e.target)) {
+                closeBottomSheet();
+            }
+        });
+    }
+}
+
+// Helper functions to sync inputs
+function syncMobileInputs() {
+    document.getElementById('center-text-1-mobile').value = STATE.center.text1;
+    document.getElementById('center-text-2-mobile').value = STATE.center.text2;
+    document.getElementById('center-bg-color-mobile').value = STATE.center.bg;
+    document.getElementById('center-text-color-mobile').value = STATE.center.text;
+    document.getElementById('toggle-ink-saver-mobile').checked = STATE.inkSaver;
+    updateMobileColorVals();
+}
+
+function syncDesktopInputs() {
+    document.getElementById('center-text-1').value = STATE.center.text1;
+    document.getElementById('center-text-2').value = STATE.center.text2;
+    document.getElementById('center-bg-color').value = STATE.center.bg;
+    document.getElementById('center-text-color').value = STATE.center.text;
+    document.getElementById('toggle-ink-saver').checked = STATE.inkSaver;
+}
+
+function updateMobileColorVals() {
+    const bgValEl = document.querySelector('#center-bg-color-mobile ~ .color-val');
+    const textValEl = document.querySelector('#center-text-color-mobile ~ .color-val');
+    if (bgValEl) bgValEl.textContent = STATE.center.bg;
+    if (textValEl) textValEl.textContent = STATE.center.text;
+}
+
+// Render segments for mobile sheet
+function renderSegmentEditorMobile() {
+    const t = TRANSLATIONS[currentLang];
+    const container = document.getElementById('segments-editor-container-mobile');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    STATE.segments.forEach((seg, idx) => {
+        const row = document.createElement('div');
+        row.className = 'segment-row';
+        row.dataset.index = idx;
+
+        const num = document.createElement('span');
+        num.className = 'seg-num';
+        num.textContent = idx + 1;
+        row.appendChild(num);
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'seg-input';
+        input.value = seg.label;
+        input.placeholder = `${t.segment_placeholder} ${idx + 1}`;
+        input.oninput = (e) => {
+            STATE.segments[idx].label = e.target.value;
+            drawWheel();
+        };
+        row.appendChild(input);
+
+        const colorInput = document.createElement('input');
+        colorInput.type = 'color';
+        colorInput.className = 'seg-color';
+        colorInput.value = seg.bg;
+        colorInput.oninput = (e) => {
+            STATE.segments[idx].bg = e.target.value;
+            drawWheel();
+        };
+        row.appendChild(colorInput);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete-seg';
+        deleteBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+        deleteBtn.title = t.delete_segment_title;
+        deleteBtn.onclick = () => {
+            if (STATE.segments.length <= 3) {
+                alert(t.min_segments_alert);
+                return;
+            }
+            STATE.segments.splice(idx, 1);
+            renderSegmentEditorMobile();
+            renderSegmentEditor();
+            drawWheel();
+        };
+        row.appendChild(deleteBtn);
+
+        container.appendChild(row);
+    });
 }
 
 // ==========================================
@@ -488,6 +681,8 @@ function bindControls() {
 window.onload = () => {
     bindControls();
     renderSegmentEditor();
+    renderSegmentEditorMobile();
+    syncMobileInputs();
     drawWheel();
     applyTranslations();
 };
