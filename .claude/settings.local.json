@@ -3,7 +3,9 @@
     "allow": [
       "Bash(python -m http.server 8000)",
       "Bash(start http://localhost:8000/index.html)",
-      "Bash(curl -s http://localhost:8000/index.html)"
+      "Bash(curl -s http://localhost:8000/index.html)",
+      "Bash(Start-Process chrome *)",
+      "PowerShell(Start-Process chrome \"http://localhost:8000\")"
     ]
   }
 }

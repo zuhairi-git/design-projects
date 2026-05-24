@@ -6,11 +6,13 @@
     <title>Design Projects</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --color-bg-dark: #0c0e17;
+            color-scheme: dark;
+            --color-bg-primary: #0c0e17;
+            --color-bg-secondary: #1a1f2e;
             --color-bg-surface: #131726;
             --color-bg-input: #090b12;
             --color-border: rgba(255, 255, 255, 0.08);
@@ -19,13 +21,27 @@
             --color-text-muted: #64748b;
             --color-accent-teal: #00f0ff;
             --color-accent-blue: #3b82f6;
-            --font-heading: 'Outfit', sans-serif;
-            --font-body: 'Space Grotesk', sans-serif;
+            --font-heading: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-body: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             --border-radius-sm: 8px;
             --border-radius-md: 14px;
             --border-radius-lg: 20px;
             --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        :root.light-theme {
+            color-scheme: light;
+            --color-bg-primary: #f8fafc;
+            --color-bg-secondary: #f1f5f9;
+            --color-bg-surface: #ffffff;
+            --color-bg-input: #f1f5f9;
+            --color-border: rgba(0, 0, 0, 0.08);
+            --color-text-primary: #0d1117;
+            --color-text-secondary: #57606a;
+            --color-text-muted: #8a92a3;
+            --color-accent-teal: #0891b2;
+            --color-accent-blue: #2563eb;
         }
 
         * {
@@ -35,11 +51,15 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0c0e17 0%, #1a1f2e 100%);
+            background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
             color: var(--color-text-primary);
             font-family: var(--font-body);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
 
         /* Header */
@@ -57,6 +77,12 @@
             padding: 0 3rem;
             z-index: 1000;
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            transition: background var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+        }
+
+        :root.light-theme header {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
 
         .header-content {
@@ -66,6 +92,36 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 8px;
+            color: var(--color-accent-teal);
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all var(--transition-fast);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--color-accent-teal);
+        }
+
+        :root.light-theme .theme-toggle {
+            background: rgba(37, 99, 235, 0.08);
+            border-color: rgba(37, 99, 235, 0.3);
+            color: var(--color-accent-blue);
+        }
+
+        :root.light-theme .theme-toggle:hover {
+            background: rgba(37, 99, 235, 0.15);
+            border-color: var(--color-accent-blue);
         }
 
         .logo {
@@ -149,7 +205,7 @@
         }
 
         .project-card {
-            background: linear-gradient(135deg, var(--color-bg-surface) 0%, rgba(19, 23, 38, 0.6) 100%);
+            background: linear-gradient(135deg, var(--color-bg-surface) 0%, var(--color-bg-secondary) 100%);
             border: 1px solid var(--color-border);
             border-radius: var(--border-radius-lg);
             padding: 2rem;
@@ -318,6 +374,9 @@
                     <p>Craft & Create</p>
                 </div>
             </a>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </div>
     </header>
 
@@ -364,5 +423,50 @@
     <footer>
         <p>&copy; 2026 Design Projects. All rights reserved. Created with passion and attention to detail.</p>
     </footer>
+
+    <script>
+        // Theme Management
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        const THEME_KEY = 'design-projects-theme';
+
+        // Initialize theme from localStorage or system preference
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else if (prefersDark) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                htmlElement.classList.add('light-theme');
+                localStorage.setItem(THEME_KEY, 'light');
+                themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                htmlElement.classList.remove('light-theme');
+                localStorage.setItem(THEME_KEY, 'dark');
+                themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = htmlElement.classList.contains('light-theme') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+        }
+
+        // Event listener
+        themeToggle.addEventListener('click', toggleTheme);
+
+        // Initialize on page load
+        initializeTheme();
+    </script>
 </body>
 </html>

@@ -262,7 +262,7 @@ function drawWheel() {
             text.setAttribute("text-anchor", "middle");
             text.setAttribute("dominant-baseline", "middle");
             text.setAttribute("fill", "#000000");
-            text.setAttribute("font-family", "'Outfit', sans-serif");
+            text.setAttribute("font-family", "'Poppins', sans-serif");
             text.setAttribute("font-weight", "800");
             text.setAttribute("font-size", "13");
 
@@ -762,9 +762,51 @@ function renderSegmentEditorMobile() {
 }
 
 // ==========================================
-// 8. INITIALIZATION
+// 8. THEME MANAGEMENT
+// ==========================================
+const THEME_KEY = 'design-projects-theme';
+
+function initializeTheme() {
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (savedTheme) {
+        applyTheme(savedTheme);
+    } else if (prefersDark) {
+        applyTheme('dark');
+    } else {
+        applyTheme('light');
+    }
+}
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.documentElement.classList.add('light-theme');
+        localStorage.setItem(THEME_KEY, 'light');
+        const themeBtn = document.getElementById('btn-theme-toggle');
+        if (themeBtn) themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    } else {
+        document.documentElement.classList.remove('light-theme');
+        localStorage.setItem(THEME_KEY, 'dark');
+        const themeBtn = document.getElementById('btn-theme-toggle');
+        if (themeBtn) themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+    }
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.classList.contains('light-theme') ? 'light' : 'dark';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    applyTheme(newTheme);
+}
+
+// ==========================================
+// 9. INITIALIZATION
 // ==========================================
 window.onload = () => {
+    initializeTheme();
+    const themeToggle = document.getElementById('btn-theme-toggle');
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+
     bindControls();
     renderSegmentEditor();
     renderSegmentEditorMobile();
