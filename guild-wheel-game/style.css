@@ -110,23 +110,171 @@ body {
     gap: 0.5rem;
 }
 
-.btn-header-menu {
-    display: none;
-    width: 40px;
-    height: 40px;
+/* Header Settings Dropdown */
+.header-dropdown-wrapper {
+    position: relative;
+}
+
+.btn-header-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
     background: rgba(0, 240, 255, 0.08);
     border: 1px solid rgba(0, 240, 255, 0.3);
     color: var(--color-accent-teal);
     border-radius: var(--border-radius-sm);
     cursor: pointer;
-    font-size: 1rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.9rem;
     transition: var(--transition-fast);
-    align-items: center;
-    justify-content: center;
 }
 
-.btn-header-menu:hover {
+.btn-header-dropdown:hover {
     background: rgba(0, 240, 255, 0.15);
+}
+
+.btn-header-dropdown.active {
+    background: rgba(0, 240, 255, 0.15);
+}
+
+.dropdown-label {
+    display: none;
+}
+
+.dropdown-chevron {
+    font-size: 0.7rem;
+    transition: transform var(--transition-fast);
+}
+
+.dropdown-chevron.rotated {
+    transform: rotate(180deg);
+}
+
+.header-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    min-width: 320px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    z-index: 500;
+    transform-origin: top right;
+    transform: scaleY(0.9) translateY(-6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all var(--transition-normal);
+}
+
+.header-dropdown-panel.open {
+    transform: scaleY(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.header-dropdown-panel .dropdown-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin: 0;
+}
+
+.header-dropdown-panel .dropdown-section {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.header-dropdown-panel .dropdown-section-title {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding-bottom: 4px;
+}
+
+/* Compact preset buttons for header */
+.preset-buttons-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.btn-preset-compact {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-primary);
+    padding: 10px 12px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-align: left;
+    transition: var(--transition-fast);
+}
+
+.btn-preset-compact:hover,
+.btn-preset-compact:active {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--color-text-secondary);
+}
+
+.btn-preset-compact.active {
+    background: rgba(0, 240, 255, 0.08);
+    border-color: var(--color-accent-teal);
+    color: var(--color-accent-teal);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.12);
+}
+
+/* Compact language buttons */
+.lang-buttons-compact {
+    display: flex;
+    gap: 6px;
+}
+
+.btn-lang-compact {
+    flex: 1;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: 8px 10px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: var(--transition-fast);
+    text-align: center;
+}
+
+.btn-lang-compact:hover,
+.btn-lang-compact:active {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--color-text-secondary);
+    color: var(--color-text-primary);
+}
+
+.btn-lang-compact.active {
+    background: rgba(0, 240, 255, 0.08);
+    border-color: var(--color-accent-teal);
+    color: var(--color-accent-teal);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.12);
 }
 
 .btn-sm {
@@ -646,76 +794,68 @@ body {
 }
 
 /* ================================================
-   MOBILE BOTTOM SHEET
+   MOBILE EDITOR SHEET
    ================================================ */
-.mobile-backdrop {
+.mobile-editor-backdrop {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     z-index: 280;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
     margin-top: var(--header-height);
 }
 
-.mobile-backdrop.visible {
+.mobile-editor-backdrop.visible {
     display: block;
 }
 
-.mobile-bottom-sheet {
+.mobile-editor-sheet {
     display: none;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    max-height: var(--bottom-sheet-max);
+    max-height: 80vh;
     background: var(--color-bg-dark);
     border-top: 1px solid var(--color-border);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     z-index: 300;
     flex-direction: column;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.mobile-bottom-sheet.visible {
+.mobile-editor-sheet.visible {
     display: flex;
     transform: translateY(0);
 }
 
-.bottom-sheet-header {
+.sheet-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
     border-bottom: 1px solid var(--color-border);
     flex-shrink: 0;
-    gap: 1rem;
 }
 
-.sheet-drag-handle {
-    width: 40px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 99px;
-    margin: 0 auto;
-}
-
-.bottom-sheet-header h3 {
+.sheet-header h3 {
     font-family: var(--font-heading);
     font-size: 1rem;
     font-weight: 700;
     color: #ffffff;
     flex: 1;
     margin: 0;
+    text-align: center;
 }
 
 .btn-sheet-close {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--color-border);
     color: var(--color-text-secondary);
@@ -735,14 +875,14 @@ body {
     color: #ffffff;
 }
 
-.bottom-sheet-content {
+.sheet-content {
     flex: 1;
     overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
-.bottom-sheet-scroll {
+.sheet-scroll {
     overflow-y: auto;
     padding: 1.25rem;
     display: flex;
@@ -750,17 +890,42 @@ body {
     gap: 1.25rem;
 }
 
-.bottom-sheet-scroll::-webkit-scrollbar {
+.sheet-scroll::-webkit-scrollbar {
     width: 6px;
 }
 
-.bottom-sheet-scroll::-webkit-scrollbar-track {
+.sheet-scroll::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.bottom-sheet-scroll::-webkit-scrollbar-thumb {
+.sheet-scroll::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 99px;
+}
+
+/* Mobile Edit Button */
+.btn-mobile-edit {
+    display: none;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--color-accent-teal), var(--color-accent-blue));
+    border: none;
+    color: #0c0e17;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 0 6px 20px rgba(0, 240, 255, 0.35);
+    transition: var(--transition-fast);
+    z-index: 150;
+}
+
+.btn-mobile-edit:active,
+.btn-mobile-edit:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 28px rgba(0, 240, 255, 0.45);
 }
 
 /* ================================================
@@ -775,12 +940,13 @@ body {
         font-size: 0.95rem;
     }
 
-    .export-buttons-desktop {
-        display: none;
+    .dropdown-label {
+        display: inline;
     }
 
-    .btn-header-menu {
-        display: flex;
+    .header-dropdown-panel {
+        min-width: calc(100vw - 1.5rem);
+        right: 0;
     }
 
     .sidebar-editor {
@@ -794,6 +960,13 @@ body {
 
     .canvas-preview-container {
         padding: 0.75rem;
+        position: relative;
+    }
+
+    .btn-mobile-edit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .preview-card-sheet {

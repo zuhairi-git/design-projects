@@ -373,6 +373,26 @@ function exportToPNG() {
 // 7. BIND UI INTERACTIONS
 // ==========================================
 function bindControls() {
+    // ---- Header Settings Dropdown ----
+    const headerSettingsBtn = document.getElementById('btn-header-settings');
+    const headerSettingsPanel = document.getElementById('header-settings-panel');
+    const headerChevron = headerSettingsBtn?.querySelector('.dropdown-chevron');
+
+    if (headerSettingsBtn) {
+        headerSettingsBtn.onclick = (e) => {
+            e.stopPropagation();
+            const isOpen = headerSettingsPanel.classList.toggle('open');
+            headerChevron.classList.toggle('rotated', isOpen);
+        };
+    }
+
+    document.addEventListener('click', (e) => {
+        if (headerSettingsPanel && !document.getElementById('header-settings-wrapper').contains(e.target)) {
+            headerSettingsPanel.classList.remove('open');
+            if (headerChevron) headerChevron.classList.remove('rotated');
+        }
+    });
+
     // ---- Preset buttons (Desktop) ----
     const presetMetropolia = document.getElementById('preset-metropolia');
     const presetNeon = document.getElementById('preset-neon');
@@ -423,26 +443,80 @@ function bindControls() {
         };
     }
 
+    // ---- Preset buttons (Header) ----
+    const presetMetropoliaHeader = document.getElementById('preset-metropolia-header');
+    const presetNeonHeader = document.getElementById('preset-neon-header');
+
+    if (presetMetropoliaHeader) {
+        presetMetropoliaHeader.onclick = (e) => {
+            setActivePresetButtonHeader(e.currentTarget);
+            resetToPreset('metropolia');
+            syncMobileInputs();
+            renderSegmentEditor();
+            renderSegmentEditorMobile();
+            drawWheel();
+        };
+    }
+
+    if (presetNeonHeader) {
+        presetNeonHeader.onclick = (e) => {
+            setActivePresetButtonHeader(e.currentTarget);
+            resetToPreset('neon');
+            syncMobileInputs();
+            renderSegmentEditor();
+            renderSegmentEditorMobile();
+            drawWheel();
+        };
+    }
+
     function setActivePresetButton(btn) {
-        document.querySelectorAll('.btn-preset').forEach(b => {
-            if (b.id && (b.id.includes('desktop') || !b.id.includes('mobile'))) {
-                b.classList.remove('active');
-            }
-        });
+        document.querySelectorAll('#preset-metropolia, #preset-neon').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        // Sync with other buttons
+        if (btn.id === 'preset-metropolia') {
+            document.getElementById('preset-metropolia-mobile')?.classList.add('active');
+            document.getElementById('preset-neon-mobile')?.classList.remove('active');
+            document.getElementById('preset-metropolia-header')?.classList.add('active');
+            document.getElementById('preset-neon-header')?.classList.remove('active');
+        } else {
+            document.getElementById('preset-neon-mobile')?.classList.add('active');
+            document.getElementById('preset-metropolia-mobile')?.classList.remove('active');
+            document.getElementById('preset-neon-header')?.classList.add('active');
+            document.getElementById('preset-metropolia-header')?.classList.remove('active');
+        }
     }
 
     function setActivePresetButtonMobile(btn) {
-        const mobileButtons = document.querySelectorAll('#preset-metropolia-mobile, #preset-neon-mobile');
-        mobileButtons.forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#preset-metropolia-mobile, #preset-neon-mobile').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        // Also update desktop
+        // Sync with other buttons
         if (btn.id === 'preset-metropolia-mobile') {
             document.getElementById('preset-metropolia')?.classList.add('active');
             document.getElementById('preset-neon')?.classList.remove('active');
+            document.getElementById('preset-metropolia-header')?.classList.add('active');
+            document.getElementById('preset-neon-header')?.classList.remove('active');
         } else {
             document.getElementById('preset-neon')?.classList.add('active');
             document.getElementById('preset-metropolia')?.classList.remove('active');
+            document.getElementById('preset-neon-header')?.classList.add('active');
+            document.getElementById('preset-metropolia-header')?.classList.remove('active');
+        }
+    }
+
+    function setActivePresetButtonHeader(btn) {
+        document.querySelectorAll('#preset-metropolia-header, #preset-neon-header').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        // Sync with other buttons
+        if (btn.id === 'preset-metropolia-header') {
+            document.getElementById('preset-metropolia')?.classList.add('active');
+            document.getElementById('preset-neon')?.classList.remove('active');
+            document.getElementById('preset-metropolia-mobile')?.classList.add('active');
+            document.getElementById('preset-neon-mobile')?.classList.remove('active');
+        } else {
+            document.getElementById('preset-neon')?.classList.add('active');
+            document.getElementById('preset-metropolia')?.classList.remove('active');
+            document.getElementById('preset-neon-mobile')?.classList.add('active');
+            document.getElementById('preset-metropolia-mobile')?.classList.remove('active');
         }
     }
 
@@ -507,20 +581,20 @@ function bindControls() {
     // ---- Ink saver toggle ----
     const toggleInkSaver = document.getElementById('toggle-ink-saver');
     const toggleInkSaverMobile = document.getElementById('toggle-ink-saver-mobile');
+    const toggleInkSaverHeader = document.getElementById('toggle-ink-saver-header');
 
-    if (toggleInkSaver) toggleInkSaver.onchange = (e) => {
-        STATE.inkSaver = e.target.checked;
-        if (toggleInkSaverMobile) toggleInkSaverMobile.checked = e.target.checked;
+    const updateAllToggles = (checked) => {
+        STATE.inkSaver = checked;
+        if (toggleInkSaver) toggleInkSaver.checked = checked;
+        if (toggleInkSaverMobile) toggleInkSaverMobile.checked = checked;
+        if (toggleInkSaverHeader) toggleInkSaverHeader.checked = checked;
         updateUIColors();
         drawWheel();
     };
 
-    if (toggleInkSaverMobile) toggleInkSaverMobile.onchange = (e) => {
-        STATE.inkSaver = e.target.checked;
-        if (toggleInkSaver) toggleInkSaver.checked = e.target.checked;
-        updateUIColors();
-        drawWheel();
-    };
+    if (toggleInkSaver) toggleInkSaver.onchange = (e) => updateAllToggles(e.target.checked);
+    if (toggleInkSaverMobile) toggleInkSaverMobile.onchange = (e) => updateAllToggles(e.target.checked);
+    if (toggleInkSaverHeader) toggleInkSaverHeader.onchange = (e) => updateAllToggles(e.target.checked);
 
     // ---- Add segment ----
     const btnAddSegment = document.getElementById('btn-add-segment');
@@ -545,68 +619,80 @@ function bindControls() {
     document.getElementById('btn-export-png-header')?.addEventListener('click', () => exportToPNG());
     document.getElementById('btn-print-pdf-header')?.addEventListener('click', () => window.print());
 
+    // ---- Mobile Editor Sheet ----
+    const mobileEditorSheet = document.getElementById('mobile-editor-sheet');
+    const mobileEditorBackdrop = document.getElementById('mobile-editor-backdrop');
+    const mobileSheetCloseBtn = document.getElementById('btn-sheet-close');
+    const mobileEditBtn = document.getElementById('btn-mobile-edit');
+
+    function openMobileEditorSheet() {
+        mobileEditorSheet.classList.add('visible');
+        mobileEditorBackdrop.classList.add('visible');
+    }
+
+    function closeMobileEditorSheet() {
+        mobileEditorSheet.classList.remove('visible');
+        mobileEditorBackdrop.classList.remove('visible');
+    }
+
+    if (mobileEditBtn) {
+        mobileEditBtn.onclick = openMobileEditorSheet;
+    }
+
+    if (mobileSheetCloseBtn) {
+        mobileSheetCloseBtn.onclick = closeMobileEditorSheet;
+    }
+
+    if (mobileEditorBackdrop) {
+        mobileEditorBackdrop.onclick = closeMobileEditorSheet;
+    }
+
     // ---- Language buttons ----
-    document.querySelectorAll('.btn-lang').forEach(btn => {
+    document.querySelectorAll('.btn-lang, .btn-lang-compact').forEach(btn => {
         btn.onclick = () => {
             currentLang = btn.dataset.lang;
+            // Update all language buttons
+            document.querySelectorAll('.btn-lang, .btn-lang-compact').forEach(b => {
+                b.classList.toggle('active', b.dataset.lang === currentLang);
+            });
             applyTranslations();
         };
     });
 
-    // ---- Mobile Bottom Sheet ----
-    const bottomSheet = document.getElementById('mobile-bottom-sheet');
-    const backdrop = document.getElementById('mobile-backdrop');
-    const headerMenuBtn = document.getElementById('btn-header-menu');
-    const sheetCloseBtn = document.getElementById('btn-sheet-close');
-
-    function openBottomSheet() {
-        bottomSheet.classList.add('visible');
-        backdrop.classList.add('visible');
-    }
-
-    function closeBottomSheet() {
-        bottomSheet.classList.remove('visible');
-        backdrop.classList.remove('visible');
-    }
-
-    if (headerMenuBtn) {
-        headerMenuBtn.onclick = openBottomSheet;
-    }
-
-    if (sheetCloseBtn) {
-        sheetCloseBtn.onclick = closeBottomSheet;
-    }
-
-    if (backdrop) {
-        backdrop.onclick = closeBottomSheet;
-    }
-
-    // Close sheet when clicking outside
-    if (bottomSheet) {
-        document.addEventListener('click', (e) => {
-            if (!bottomSheet.contains(e.target) && !headerMenuBtn?.contains(e.target)) {
-                closeBottomSheet();
-            }
-        });
-    }
 }
 
 // Helper functions to sync inputs
 function syncMobileInputs() {
-    document.getElementById('center-text-1-mobile').value = STATE.center.text1;
-    document.getElementById('center-text-2-mobile').value = STATE.center.text2;
-    document.getElementById('center-bg-color-mobile').value = STATE.center.bg;
-    document.getElementById('center-text-color-mobile').value = STATE.center.text;
-    document.getElementById('toggle-ink-saver-mobile').checked = STATE.inkSaver;
+    const el1 = document.getElementById('center-text-1-mobile');
+    const el2 = document.getElementById('center-text-2-mobile');
+    const elBg = document.getElementById('center-bg-color-mobile');
+    const elText = document.getElementById('center-text-color-mobile');
+    const elToggle = document.getElementById('toggle-ink-saver-mobile');
+    const elToggleHeader = document.getElementById('toggle-ink-saver-header');
+
+    if (el1) el1.value = STATE.center.text1;
+    if (el2) el2.value = STATE.center.text2;
+    if (elBg) elBg.value = STATE.center.bg;
+    if (elText) elText.value = STATE.center.text;
+    if (elToggle) elToggle.checked = STATE.inkSaver;
+    if (elToggleHeader) elToggleHeader.checked = STATE.inkSaver;
     updateMobileColorVals();
 }
 
 function syncDesktopInputs() {
-    document.getElementById('center-text-1').value = STATE.center.text1;
-    document.getElementById('center-text-2').value = STATE.center.text2;
-    document.getElementById('center-bg-color').value = STATE.center.bg;
-    document.getElementById('center-text-color').value = STATE.center.text;
-    document.getElementById('toggle-ink-saver').checked = STATE.inkSaver;
+    const el1 = document.getElementById('center-text-1');
+    const el2 = document.getElementById('center-text-2');
+    const elBg = document.getElementById('center-bg-color');
+    const elText = document.getElementById('center-text-color');
+    const elToggle = document.getElementById('toggle-ink-saver');
+    const elToggleHeader = document.getElementById('toggle-ink-saver-header');
+
+    if (el1) el1.value = STATE.center.text1;
+    if (el2) el2.value = STATE.center.text2;
+    if (elBg) elBg.value = STATE.center.bg;
+    if (elText) elText.value = STATE.center.text;
+    if (elToggle) elToggle.checked = STATE.inkSaver;
+    if (elToggleHeader) elToggleHeader.checked = STATE.inkSaver;
 }
 
 function updateMobileColorVals() {
